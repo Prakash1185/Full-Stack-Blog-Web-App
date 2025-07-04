@@ -20,8 +20,8 @@ const BlogCard = ({
 }) => {
   // Truncate description to show "..." at the end
   const truncatedDescription =
-    description?.length > 120
-      ? description.substring(0, 120) + "..."
+    description?.length > 180
+      ? description.substring(0, 180) + "..."
       : description;
 
   const slugTitle = title
@@ -30,30 +30,38 @@ const BlogCard = ({
     .replace(/[^\w-]/g, "");
 
   return (
-    <Card className="w-full  flex flex-col bg-main gap-4 transition-shadow duration-300  py-0 mt-12">
+    <Card className="w-full max-w-sm mx-auto md:max-w-none flex flex-col bg-main transition-shadow duration-300 py-0 mt-6 md:mt-12">
       <CardHeader className="p-0">
-        <div className="relative overflow-hidden">
-          <img src={image} alt={title} className="w-full h-64 object-cover rounded-t-sm" />
-          <Badge variant="" className="absolute text-sm top-2 left-2">
+        <div className="relative overflow-hidden border-b-2 border-border">
+          <img 
+            src={image} 
+            alt={title} 
+            className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-t-sm" 
+          />
+          <Badge variant="" className="absolute text-xs md:text-sm top-2 left-2">
             {category}
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="flex-1 p-4 pt-0 dark:text-background">
-        <h3 className="text-2xl font-semibold mb-2 capitalize tracking-tight">
+      <CardContent className="flex-1 p-3 md:p-4 pt-0 dark:text-background">
+        <h3 className="text-lg md:text-xl lg:text-2xl font-semibold mb-2 capitalize tracking-tight line-clamp-2 -mt-6 ">
           {title}
         </h3>
-        <p className="text-sm mb-3">{truncatedDescription}</p>
-        <div className="flex items-center text-sm">
+        <p className="text-xs md:text-sm mb-3 line-clamp-3">
+          {truncatedDescription}
+        </p>
+        <div className="flex items-center text-xs md:text-sm">
           <CalendarIcon className="w-3 h-3 mr-1" />
-          {new Date(date).toLocaleDateString()}
+          <span className="text-xs md:text-sm">
+            {new Date(date).toLocaleDateString()}
+          </span>
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0 w-full mt-auto">
+      <CardFooter className="p-3 md:p-4 pt-0 w-full mt-auto">
         <Link href={`/blog/${slugTitle}`} className="w-full">
-          <Button className="w-full bg-background dark:bg-foreground cursor-pointer">
+          <Button className="w-full bg-background dark:bg-foreground cursor-pointer text-sm md:text-base py-2 md:py-3">
             Read More
           </Button>
         </Link>
