@@ -10,7 +10,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata = {
-  title: "Blogera",
+  title: "Wryto",
   description: "Full stack markdown based b.og app",
 };
 

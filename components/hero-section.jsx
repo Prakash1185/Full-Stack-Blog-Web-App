@@ -41,18 +41,13 @@ const HeroSection = () => {
       {/* RIGHT SIDE - BLOG SLIDER */}
       <div className="flex-1 w-full max-w-sm md:max-w-md md:mt-8">
         <Swiper
-          modules={[Pagination, Autoplay]}
+          modules={[Autoplay]}
           spaceBetween={30}
           slidesPerView={1}
           loop={true}
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-            bulletClass: "swiper-pagination-bullet !bg-gray-400",
-            bulletActiveClass: "swiper-pagination-bullet-active !bg-blue-600",
           }}
           className="w-full h-auto"
         >

@@ -10,14 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarIcon } from "lucide-react";
 import Link from "next/link";
 
-const BlogCard = ({
-  image,
-  title,
-  description,
-  date,
-  category,
-  onReadMore,
-}) => {
+const BlogCard = ({ image, title, description, date, category }) => {
   // Truncate description to show "..." at the end
   const truncatedDescription =
     description?.length > 180
@@ -29,16 +22,28 @@ const BlogCard = ({
     .replace(/\s+/g, "-")
     .replace(/[^\w-]/g, "");
 
+  // Format date consistently for SSR/client hydration
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <Card className="w-full max-w-sm mx-auto md:max-w-none flex flex-col bg-main transition-shadow duration-300 py-0 mt-6 md:mt-12">
       <CardHeader className="p-0">
         <div className="relative overflow-hidden border-b-2 border-border">
-          <img 
-            src={image} 
-            alt={title} 
-            className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-t-sm" 
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-48 md:h-56 lg:h-64 object-cover rounded-t-sm"
           />
-          <Badge variant="" className="absolute text-xs md:text-sm top-2 left-2">
+          <Badge
+            variant=""
+            className="absolute text-xs md:text-sm top-2 left-2"
+          >
             {category}
           </Badge>
         </div>
@@ -53,9 +58,7 @@ const BlogCard = ({
         </p>
         <div className="flex items-center text-xs md:text-sm">
           <CalendarIcon className="w-3 h-3 mr-1" />
-          <span className="text-xs md:text-sm">
-            {new Date(date).toLocaleDateString()}
-          </span>
+          <span className="text-xs md:text-sm">{formatDate(date)}</span>
         </div>
       </CardContent>
 
