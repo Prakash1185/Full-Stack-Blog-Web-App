@@ -11,31 +11,35 @@ import { sampleBlogs } from "@/data/blogs";
 
 const HeroSection = () => {
   return (
-    <div className="min-h-screen flex items-center justify-between px-16 ">
+    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-between px-4 md:px-8 lg:px-16 py-8 pb-16 gap-8 md:gap-0 mt-20 lg:mt-0 ">
       {/* LEFT SIDE - HERO TEXTS */}
-      <div className="flex-1 max-w-2xl xl:max-w-4xl pr-8">
+      <div className="flex-1 max-w-2xl xl:max-w-4xl md:pr-8 text-center lg:text-left">
         <div className="mb-6">
-          <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold  leading-tight mb-2">
+          <h1 className="text-3xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-bold leading-tight mb-2 tracking-tighter sm:tracking-normal">
             Blogs worth your time
           </h1>
-          <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold  leading-tight">
+          <h1 className="text-3xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-bold leading-tight tracking-tighter sm:tracking-normal">
             No noise only value
           </h1>
         </div>
 
-        <p className="text-lg  mb-8 leading-relaxed max-w-xl">
+        <p className="text-sm md:text-lg mb-6 md:mb-8 leading-relaxed max-w-sm sm:max-w-xl mx-auto md:mx-0">
           Explore quality markdown blogs written and curated for you. Upvote
           what matters and comment your thoughts.
         </p>
 
-        <div className="flex gap-4">
-          <Button className="px-8 py-6 text-lg">Start Reading</Button>
-          <Button className="px-8 py-6 text-lg">Browse Categories</Button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <Button className="px-6 md:px-8 py-4 md:py-6 text-base md:text-lg">
+            Start Reading
+          </Button>
+          <Button className="px-6 md:px-8 py-4 md:py-6 text-base md:text-lg">
+            Browse Categories
+          </Button>
         </div>
       </div>
 
       {/* RIGHT SIDE - BLOG SLIDER */}
-      <div className="flex-1 max-w-md">
+      <div className="flex-1 w-full max-w-sm md:max-w-md md:mt-8">
         <Swiper
           modules={[Pagination, Autoplay]}
           spaceBetween={30}
@@ -44,6 +48,11 @@ const HeroSection = () => {
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+            bulletClass: "swiper-pagination-bullet !bg-gray-400",
+            bulletActiveClass: "swiper-pagination-bullet-active !bg-blue-600",
           }}
           className="w-full h-auto"
         >
