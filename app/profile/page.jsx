@@ -346,7 +346,7 @@ const Profile = () => {
                       Start saving blogs to see them here
                     </p>
                     <Link href="/blogs">
-                      <Button variant="outline" className="text-xs sm:text-sm">
+                      <Button variant="" className="text-xs sm:text-sm bg-secondary-background dark:bg-foreground">
                         Browse Blogs
                       </Button>
                     </Link>

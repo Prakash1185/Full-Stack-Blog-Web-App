@@ -59,9 +59,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-6 md:mb-8">
           {/* Logo and Tagline */}
           <div className="text-center md:text-left">
-            <h3 className="text-3xl lg:text-4xl font-bold mb-2">
-              Wryto
-            </h3>
+            <Link href={"/"}>
+              <h3 className="text-3xl lg:text-4xl font-bold mb-2">Wryto</h3>
+            </Link>
             <p className="text-xs md:text-sm">Quality blogs worth your time</p>
           </div>
 

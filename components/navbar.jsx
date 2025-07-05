@@ -29,7 +29,9 @@ const Navbar = () => {
         <div className="flex items-center gap-5">
           {/* Logo */}
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold">Wryto</h1>
+            <Link href={"/"}>
+              <h1 className="text-3xl md:text-4xl font-bold">Wryto</h1>
+            </Link>
           </div>
 
           {/* Desktop Separator */}
@@ -61,12 +63,7 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <div className="flex md:hidden items-center gap-3">
           <ModeToggle />
-          <Button
-            variant=""
-            size=""
-            onClick={toggleDrawer}
-            className="p-3 "
-          >
+          <Button variant="" size="" onClick={toggleDrawer} className="p-3 ">
             {isDrawerOpen ? <X size={24} /> : <Menu size={24} />}
           </Button>
         </div>
@@ -92,12 +89,13 @@ const Navbar = () => {
 
             {/* Login Button */}
             <Link href={"/login"} onClick={closeDrawer} className="block">
-              <Button className="w-full text-lg py-3 cursor-pointer">Login</Button>
+              <Button className="w-full text-lg py-3 cursor-pointer">
+                Login
+              </Button>
             </Link>
           </div>
         </div>
       )}
-
     </>
   );
 };

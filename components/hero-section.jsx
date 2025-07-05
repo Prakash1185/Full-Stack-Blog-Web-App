@@ -25,8 +25,7 @@ const HeroSection = () => {
         </div>
 
         <p className="text-sm md:text-lg mb-6 md:mb-8 leading-relaxed max-w-sm sm:max-w-xl mx-auto md:mx-0">
-          Explore quality markdown blogs written and curated for you. Upvote
-          what matters and comment your thoughts.
+           Discover insightful articles crafted to inform and spark meaningful conversations where every blog is worthy.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
