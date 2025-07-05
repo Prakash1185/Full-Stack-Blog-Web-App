@@ -2,30 +2,9 @@ import React from "react";
 import CategoryCard from "./category-card";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { categoriesData } from "@/data/categories";
 
-// Sample categories data
-const categoriesData = [
-  {
-    category: "Technology",
-    blogCount: 24,
-  },
-  {
-    category: "Lifestyle",
-    blogCount: 24,
-  },
-  {
-    category: "Fashion",
-    blogCount: 24,
-  },
-  {
-    category: "Gaming",
-    blogCount: 24,
-  },
-  {
-    category: "Cooking",
-    blogCount: 24,
-  },
-];
+
 
 const CategorySection = () => {
   return (

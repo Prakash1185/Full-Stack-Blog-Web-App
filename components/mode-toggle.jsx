@@ -26,7 +26,7 @@ export function ModeToggle() {
     <Button
       onClick={toggleTheme}
       variant=""
-      className="bg-secondary-background dark:text-foreground relative"
+      className="bg-secondary-background dark:bg-foreground relative"
       size="icon"
     >
       <Sun className="h-[1.2rem] w-[1.2rem] transition-all rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />

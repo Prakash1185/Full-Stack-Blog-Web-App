@@ -60,6 +60,7 @@ const BlogCard = ({ image, title, description, date, category }) => {
           <CalendarIcon className="w-3 h-3 mr-1" />
           <span className="text-xs md:text-sm">{formatDate(date)}</span>
         </div>
+        
       </CardContent>
 
       <CardFooter className="p-3 md:p-4 pt-0 w-full mt-auto">

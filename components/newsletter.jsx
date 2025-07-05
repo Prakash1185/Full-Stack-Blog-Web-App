@@ -14,7 +14,7 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 bg-secondary-background border-t-4 border-b-4 border-border">
+    <section className="px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 bg-secondary-background border-t-4 border-border">
       <div className="max-w-4xl mx-auto text-center">
         {/* Hero Text */}
         <div className="mb-6 md:mb-8">

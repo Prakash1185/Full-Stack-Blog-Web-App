@@ -9,7 +9,7 @@ const CategoryCard = ({ category, blogCount }) => {
           {category}
         </h3>
         <p className="text-sm md:text-base lg:text-lg opacity-90">
-          {blogCount} articles
+          {blogCount} blogs
         </p>
       </CardContent>
     </Card>

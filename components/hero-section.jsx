@@ -8,6 +8,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { sampleBlogs } from "@/data/blogs";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -29,12 +30,16 @@ const HeroSection = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          <Button className="px-6 md:px-8 py-4 md:py-6 text-base md:text-lg">
-            Start Reading
-          </Button>
-          <Button className="px-6 md:px-8 py-4 md:py-6 text-base md:text-lg">
-            Browse Categories
-          </Button>
+          <Link href={"/blogs"}>
+            <Button className="px-6 md:px-8 py-4 md:py-6 text-base md:text-lg cursor-pointer">
+              Start Reading
+            </Button>
+          </Link>
+          <Link href={"/category"}>
+            <Button className="px-6 md:px-8 py-4 md:py-6 text-base md:text-lg cursor-pointer">
+              Browse Categories
+            </Button>
+          </Link>
         </div>
       </div>
 

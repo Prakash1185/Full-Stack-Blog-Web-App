@@ -77,7 +77,7 @@ const Navbar = () => {
         <div className="md:hidden fixed top-[73px] left-0 w-full bg-secondary-background border-b-4 border-border z-10 shadow-lg">
           <div className="px-4 py-6 space-y-4">
             {/* Navigation Links */}
-            <div className="flex justify-center gap-8 mb-6">
+            <div className="flex justify-center gap-6 sm:gap-8 mb-6">
               {navLinks.map((link, index) => (
                 <Link
                   key={index}
