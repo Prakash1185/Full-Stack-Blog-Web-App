@@ -57,6 +57,7 @@ const BlogCard = ({
             {new Date(date).toLocaleDateString()}
           </span>
         </div>
+        
       </CardContent>
 
       <CardFooter className="p-3 md:p-4 pt-0 w-full mt-auto">
