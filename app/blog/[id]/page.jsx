@@ -393,15 +393,7 @@ const SingleBlogPage = () => {
           </div>
         )}
 
-        {/* Back to Blogs Footer */}
-        <div className="border-t pt-6 text-center">
-          <Link href="/blogs">
-            <Button variant="outline" className="text-sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to All Blogs
-            </Button>
-          </Link>
-        </div>
+      
       </div>
     </div>
   );
