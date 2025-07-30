@@ -195,14 +195,12 @@ const BlogsPage = () => {
         {/* Results Info */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1 mb-4">
           <p className="text-xs md:text-sm opacity-70">
-            Showing {filteredBlogs.length} of {blogs.length} approved blogs
+            Showing {filteredBlogs.length} of {blogs.length} blogs
             {selectedCategory !== "All" && ` in "${selectedCategory}"`}
             {searchTerm && ` matching "${searchTerm}"`}
           </p>
 
-          {blogs.length > 0 && (
-            <p className="text-xs opacity-50">Only published blogs are shown</p>
-          )}
+         
         </div>
 
         {/* Blog Grid */}

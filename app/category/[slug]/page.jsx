@@ -58,9 +58,9 @@ const SingleCategoryBlogs = () => {
       }
 
       if (blogsResult.success) {
-        toast.success(
-          // `Loaded ${blogsResult.blogs.length} ${categoryName} blogs!`
-        );
+        // toast.success(
+        //   // `Loaded ${blogsResult.blogs.length} ${categoryName} blogs!`
+        // );
       }
     } catch (error) {
       toast.error("An unexpected error occurred while fetching data");
@@ -166,17 +166,7 @@ const SingleCategoryBlogs = () => {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
               {categoryName}
             </h1>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="hidden sm:flex"
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-              />
-            </Button>
+           
             <Badge variant="secondary" className="text-xs md:text-sm">
               {categoryData?.blogCount || filteredBlogs.length} articles
             </Badge>

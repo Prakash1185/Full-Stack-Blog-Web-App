@@ -1,7 +1,9 @@
-"use client"
+"use client";
 import * as React from "react";
 import { ArrowLeft, GalleryVerticalEnd, LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { toast } from "sonner";
 
 import {
   Sidebar,
@@ -58,6 +60,21 @@ const data = {
 export function AppSidebar({ ...props }) {
   const pathname = usePathname();
 
+  // Handle logout functionality
+  const handleLogout = async () => {
+    try {
+      console.log("🔄 Admin logging out from sidebar...");
+      await signOut({
+        callbackUrl: "/",
+        redirect: true,
+      });
+      console.log("✅ Admin logout successful");
+    } catch (error) {
+      console.error("❌ Admin logout error:", error);
+      toast.error("Failed to logout");
+    }
+  };
+
   return (
     <Sidebar variant="floating" {...props}>
       <SidebarHeader>
@@ -94,7 +111,6 @@ export function AppSidebar({ ...props }) {
                         <SidebarMenuSubItem key={subItem.title}>
                           <Button
                             size={"sm"}
-                        
                             className={cn(
                               "w-full dark:text-foreground",
                               !isActive && "bg-secondary-background"
@@ -125,8 +141,10 @@ export function AppSidebar({ ...props }) {
                   <Button
                     size={"sm"}
                     className="w-full bg-red-500 cursor-pointer"
+                    onClick={handleLogout}
                   >
-                    <LogOut /> Log out
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
                   </Button>
                 </SidebarMenuSubItem>
               </SidebarMenuSub>
