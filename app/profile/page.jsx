@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,68 +23,98 @@ import {
   Save,
   X,
   Home,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  getUserProfile,
+  updateUserProfile,
+  deleteUserAccount,
+  removeSavedBlog,
+} from "@/lib/actions/user.actions";
 
 const Profile = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [isEditingName, setIsEditingName] = useState(false);
-  const [userName, setUserName] = useState("John Doe");
-  const [tempName, setTempName] = useState(userName);
+  const [userName, setUserName] = useState("");
+  const [tempName, setTempName] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [savedBlogs, setSavedBlogs] = useState([
-    {
-      id: 1,
-      title: "Getting Started with Next.js 14",
-      category: "Technology",
-      image:
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=200&fit=crop",
-    },
-    {
-      id: 2,
-      title: "Modern CSS Techniques for Better UI",
-      category: "Design",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=200&fit=crop",
-    },
-    {
-      id: 3,
-      title: "Understanding React Server Components",
-      category: "Development",
-      image:
-        "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=200&fit=crop",
-    },
-    {
-      id: 4,
-      title: "Advanced TypeScript Patterns",
-      category: "Programming",
-      image:
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop",
-    },
-    {
-      id: 5,
-      title: "Building Scalable Node.js Applications",
-      category: "Backend",
-      image:
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=200&fit=crop",
-    },
-    {
-      id: 6,
-      title: "Mastering Database Design",
-      category: "Database",
-      image:
-        "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=200&fit=crop",
-    },
-  ]);
+  const [savedBlogs, setSavedBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  // Sample user data
-  const userEmail = "john.doe@example.com";
-  const userAvatar =
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face";
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
 
-  const handleSaveName = () => {
-    setUserName(tempName);
-    setIsEditingName(false);
+  // Fetch user profile data
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchUserProfile();
+    }
+  }, [status]);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      console.log("🔄 Fetching user profile...");
+
+      const result = await getUserProfile();
+
+      if (result.success) {
+        setUserName(result.user.name || "");
+        setTempName(result.user.name || "");
+        setSavedBlogs(result.user.savedBlogs || []);
+        console.log("✅ User profile loaded successfully");
+      } else {
+        console.error("❌ Failed to fetch user profile:", result.error);
+        toast.error("Failed to load profile data");
+      }
+    } catch (error) {
+      console.error("❌ Error fetching user profile:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveName = async () => {
+    if (!tempName.trim()) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      console.log("🔄 Updating user name...");
+
+      const result = await updateUserProfile({ name: tempName.trim() });
+
+      if (result.success) {
+        setUserName(tempName);
+        setIsEditingName(false);
+        toast.success("Name updated successfully");
+        console.log("✅ User name updated successfully");
+      } else {
+        toast.error(result.error || "Failed to update name");
+        console.error("❌ Failed to update name:", result.error);
+      }
+    } catch (error) {
+      console.error("❌ Error updating name:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setUpdating(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -92,28 +122,93 @@ const Profile = () => {
     setIsEditingName(false);
   };
 
-  const handleLogout = () => {
-    console.log("Logout clicked");
-    // Logout logic will go here
+  const handleLogout = async () => {
+    try {
+      console.log("🔄 Logging out...");
+      await signOut({
+        callbackUrl: "/",
+        redirect: true,
+      });
+      console.log("✅ Logout successful");
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+      toast.error("Failed to logout");
+    }
   };
 
-  const handleDeleteAccount = () => {
-    console.log("Delete account confirmed");
-    setIsDeleteModalOpen(false);
-    // Delete account logic will go here
+  const handleDeleteAccount = async () => {
+    try {
+      setDeleting(true);
+      console.log("🔄 Deleting user account...");
+
+      const result = await deleteUserAccount();
+
+      if (result.success) {
+        toast.success("Account deleted successfully");
+        console.log("✅ Account deleted successfully");
+
+        // Sign out and redirect
+        await signOut({
+          callbackUrl: "/",
+          redirect: true,
+        });
+      } else {
+        toast.error(result.error || "Failed to delete account");
+        console.error("❌ Failed to delete account:", result.error);
+      }
+    } catch (error) {
+      console.error("❌ Error deleting account:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setDeleting(false);
+      setIsDeleteModalOpen(false);
+    }
   };
 
-  const removeSavedBlog = (blogId) => {
-    setSavedBlogs(savedBlogs.filter((blog) => blog.id !== blogId));
+  const handleRemoveSavedBlog = async (blogId) => {
+    try {
+      console.log("🔄 Removing saved blog:", blogId);
+
+      const result = await removeSavedBlog(blogId);
+
+      if (result.success) {
+        setSavedBlogs(savedBlogs.filter((blog) => blog.id !== blogId));
+        toast.success("Blog removed from saved");
+        console.log("✅ Blog removed from saved successfully");
+      } else {
+        toast.error(result.error || "Failed to remove blog");
+        console.error("❌ Failed to remove saved blog:", result.error);
+      }
+    } catch (error) {
+      console.error("❌ Error removing saved blog:", error);
+      toast.error("An unexpected error occurred");
+    }
   };
+
+  // Show loading state while checking session or loading profile
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 py-8 mt-16 md:mt-20">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if not authenticated (this shouldn't show due to useEffect redirect)
+  if (status === "unauthenticated") {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-16 py-4 sm:py-6 md:py-8 mt-16  md:mt-20">
-      <div className=" mx-auto">
+    <div className="min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-16 py-4 sm:py-6 md:py-8 mt-16 md:mt-20">
+      <div className="mx-auto">
         {/* Page Header with Navigation Buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 md:mb-12">
           <div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 ">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
               Profile
             </h1>
             <p className="text-sm md:text-base text-muted-foreground">
@@ -159,19 +254,12 @@ const Profile = () => {
                 <div className="flex flex-col items-center space-y-4">
                   <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28">
                     <Image
-                      src={userAvatar}
+                      src={session?.user?.image || "/default-avatar.jpg"}
                       alt="Profile"
                       fill
                       className="rounded-full object-cover border-2 border-border"
                     />
                   </div>
-                  <Button
-                    variant=""
-                    size="sm"
-                    className="text-xs sm:text-sm bg-secondary-background  dark:bg-foreground cursor-pointer"
-                  >
-                    Change Photo
-                  </Button>
                 </div>
 
                 {/* Name Field */}
@@ -184,19 +272,26 @@ const Profile = () => {
                         onChange={(e) => setTempName(e.target.value)}
                         className="text-xs sm:text-sm"
                         placeholder="Enter your name"
+                        disabled={updating}
                       />
                       <Button
                         size="sm"
                         onClick={handleSaveName}
                         className="px-2"
+                        disabled={updating}
                       >
-                        <Save className="w-3 h-3 sm:w-4 sm:h-4" />
+                        {updating ? (
+                          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                        ) : (
+                          <Save className="w-3 h-3 sm:w-4 sm:h-4" />
+                        )}
                       </Button>
                       <Button
                         size="sm"
                         variant=""
                         onClick={handleCancelEdit}
                         className="px-2 bg-secondary-background dark:bg-foreground cursor-pointer"
+                        disabled={updating}
                       >
                         <X className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
@@ -204,7 +299,7 @@ const Profile = () => {
                   ) : (
                     <div className="flex items-center justify-between">
                       <span className="text-xs sm:text-sm md:text-base">
-                        {userName}
+                        {userName || session?.user?.name || "No name set"}
                       </span>
                       <Button
                         size="sm"
@@ -225,7 +320,7 @@ const Profile = () => {
                     Email
                   </label>
                   <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
-                    {userEmail}
+                    {session?.user?.email}
                   </div>
                 </div>
 
@@ -258,6 +353,7 @@ const Profile = () => {
                         variant=""
                         onClick={() => setIsDeleteModalOpen(false)}
                         className="text-xs sm:text-sm bg-secondary-background dark:text-foreground cursor-pointer"
+                        disabled={deleting}
                       >
                         Cancel
                       </Button>
@@ -265,8 +361,16 @@ const Profile = () => {
                         variant=""
                         onClick={handleDeleteAccount}
                         className="text-xs sm:text-sm bg-red-500 cursor-pointer"
+                        disabled={deleting}
                       >
-                        Delete
+                        {deleting ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete"
+                        )}
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -295,7 +399,7 @@ const Profile = () => {
                         {/* Blog Image */}
                         <div className="relative w-full sm:w-32 md:w-40 h-32 sm:h-20 md:h-24 flex-shrink-0">
                           <Image
-                            src={blog.image}
+                            src={blog.bannerImage || "/placeholder-image.jpg"}
                             alt={blog.title}
                             fill
                             className="object-cover rounded-md"
@@ -306,27 +410,19 @@ const Profile = () => {
                         <div className="flex-1 space-y-2">
                           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                             <div className="space-y-2">
-                              <Link
-                                href={`/blog/${blog.title
-                                  .toLowerCase()
-                                  .replace(/\s+/g, "-")
-                                  .replace(/[^\w-]/g, "")}`}
-                              >
+                              <Link href={`/blog/${blog.id}`}>
                                 <h3 className="text-sm sm:text-base md:text-lg font-semibold hover:opacity-80 transition-opacity line-clamp-2">
                                   {blog.title}
                                 </h3>
                               </Link>
-                              <Badge
-                                variant=""
-                                className="text-xs w-fit"
-                              >
+                              <Badge variant="" className="text-xs w-fit">
                                 {blog.category}
                               </Badge>
                             </div>
                             <Button
                               size="sm"
                               variant=""
-                              onClick={() => removeSavedBlog(blog.id)}
+                              onClick={() => handleRemoveSavedBlog(blog.id)}
                               className="px-2 bg-secondary-background dark:bg-foreground"
                             >
                               <X className="w-4 h-4" />
@@ -346,7 +442,10 @@ const Profile = () => {
                       Start saving blogs to see them here
                     </p>
                     <Link href="/blogs">
-                      <Button variant="" className="text-xs sm:text-sm bg-secondary-background dark:bg-foreground">
+                      <Button
+                        variant=""
+                        className="text-xs sm:text-sm bg-secondary-background dark:bg-foreground"
+                      >
                         Browse Blogs
                       </Button>
                     </Link>

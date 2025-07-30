@@ -2,11 +2,23 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Bookmark, Share2, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Bookmark,
+  BookmarkCheck,
+  Share2,
+  Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { getBlogById } from "@/lib/actions/blog.actions";
+import {
+  saveBlogToUser,
+  unsaveBlogFromUser,
+  checkIfBlogSaved,
+} from "@/lib/actions/user.actions";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -17,10 +29,13 @@ const SingleBlogPage = () => {
   const params = useParams();
   const router = useRouter();
   const blogId = params.id;
+  const { data: session, status } = useSession();
 
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   // Fetch blog data on component mount
   useEffect(() => {
@@ -28,6 +43,13 @@ const SingleBlogPage = () => {
       fetchBlogData();
     }
   }, [blogId]);
+
+  // Check if blog is saved when user session is available
+  useEffect(() => {
+    if (status === "authenticated" && blogId) {
+      checkSavedStatus();
+    }
+  }, [status, blogId]);
 
   const fetchBlogData = async () => {
     try {
@@ -56,6 +78,17 @@ const SingleBlogPage = () => {
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkSavedStatus = async () => {
+    try {
+      const result = await checkIfBlogSaved(blogId);
+      if (result.success) {
+        setIsSaved(result.isSaved);
+      }
+    } catch (error) {
+      console.error("❌ Error checking saved status:", error);
     }
   };
 
@@ -92,9 +125,47 @@ const SingleBlogPage = () => {
     }
   };
 
-  // Handle bookmark functionality (placeholder)
-  const handleBookmark = () => {
-    toast.info("Bookmark functionality coming soon!");
+  // Handle bookmark functionality
+  const handleBookmark = async () => {
+    // Check if user is authenticated
+    if (status !== "authenticated") {
+      toast.error("Please login to save blogs");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      setSaveLoading(true);
+
+      if (isSaved) {
+        // Unsave the blog
+        const result = await unsaveBlogFromUser(blogId);
+        if (result.success) {
+          setIsSaved(false);
+          toast.success("Blog removed from saved");
+          console.log("✅ Blog unsaved successfully");
+        } else {
+          toast.error(result.error || "Failed to remove blog from saved");
+          console.error("❌ Failed to unsave blog:", result.error);
+        }
+      } else {
+        // Save the blog
+        const result = await saveBlogToUser(blogId);
+        if (result.success) {
+          setIsSaved(true);
+          toast.success("Blog saved successfully");
+          console.log("✅ Blog saved successfully");
+        } else {
+          toast.error(result.error || "Failed to save blog");
+          console.error("❌ Failed to save blog:", result.error);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error saving/unsaving blog:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setSaveLoading(false);
+    }
   };
 
   // Loading state
@@ -103,7 +174,9 @@ const SingleBlogPage = () => {
       <div className="min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-16 py-4 sm:py-6 md:py-8 mt-14 sm:mt-16 md:mt-20">
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center pt-10 sm:pt-0">
           <Loader2 className="h-8 w-8 animate-spin mb-4" />
-          <h1 className="text-xl lg:text-2xl font-bold mb-3">Loading Blog...</h1>
+          <h1 className="text-xl lg:text-2xl font-bold mb-3">
+            Loading Blog...
+          </h1>
           <p className="text-sm opacity-70 mb-4 sm:mb-6 px-2">
             Please wait while we fetch the blog post.
           </p>
@@ -118,13 +191,14 @@ const SingleBlogPage = () => {
       <div className="min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-16 py-4 sm:py-6 md:py-8 mt-14 sm:mt-16 md:mt-20">
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center pt-10 sm:pt-0">
           <h1 className="text-3xl lg:text-4xl font-bold mb-3">
-            {error === "Blog not published yet" ? "Blog Not Published" : "Blog Not Found"}
+            {error === "Blog not published yet"
+              ? "Blog Not Published"
+              : "Blog Not Found"}
           </h1>
           <p className="text-sm opacity-70 mb-4 sm:mb-6 px-2">
-            {error === "Blog not published yet" 
+            {error === "Blog not published yet"
               ? "This blog post is still under review and hasn't been published yet."
-              : "The blog post you're looking for doesn't exist or has been removed."
-            }
+              : "The blog post you're looking for doesn't exist or has been removed."}
           </p>
           <Link href="/blogs">
             <Button className="flex items-center gap-2 text-xs sm:text-sm cursor-pointer">
@@ -160,10 +234,23 @@ const SingleBlogPage = () => {
               variant=""
               size="sm"
               onClick={handleBookmark}
-              className="flex items-center gap-1.5 sm:gap-2 cursor-pointer text-xs sm:text-sm flex-1 sm:flex-none justify-center bg-secondary-background dark:bg-foreground"
+              disabled={saveLoading}
+              className={`flex items-center gap-1.5 sm:gap-2 cursor-pointer text-xs sm:text-sm flex-1 sm:flex-none justify-center ${
+                isSaved
+                  ? "bg-green-500 hover:bg-green-600 text-white"
+                  : "bg-secondary-background dark:bg-foreground"
+              }`}
             >
-              <Bookmark className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Save</span>
+              {saveLoading ? (
+                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+              ) : isSaved ? (
+                <BookmarkCheck className="w-3 h-3 sm:w-4 sm:h-4" />
+              ) : (
+                <Bookmark className="w-3 h-3 sm:w-4 sm:h-4" />
+              )}
+              <span className="hidden sm:inline">
+                {saveLoading ? "..." : isSaved ? "Saved" : "Save"}
+              </span>
             </Button>
             <Button
               variant=""

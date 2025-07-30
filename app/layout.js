@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { usePathname } from "next/navigation";
 import { Toaster } from "sonner";
+import AuthSessionProvider from "@/components/providers/session-provider";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -19,17 +20,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${dmSans.className}`}>
-        <Toaster/>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {!isAdminRoute && <Navbar />}
-          {children}
-          {!isAdminRoute && <Footer />}
-        </ThemeProvider>
+        <Toaster />
+        <AuthSessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {!isAdminRoute && <Navbar />}
+            {children}
+            {!isAdminRoute && <Footer />}
+            <Toaster />
+          </ThemeProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );
