@@ -23,21 +23,17 @@ const BlogsPage = () => {
   const fetchBlogs = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Fetching approved blogs...");
 
       const result = await getAllApprovedBlogs();
 
       if (result.success) {
         setBlogs(result.blogs);
-        console.log(`✅ Loaded ${result.blogs.length} approved blogs`);
-        toast.success(`Loaded blogs successfully!`);
+        // toast.success(`Loaded blogs successfully!`);
       } else {
-        console.error("❌ Failed to fetch blogs:", result.error);
-        toast.error(result.error || "Failed to fetch blogs");
+        // toast.error(result.error || "Failed to fetch blogs");
         setBlogs([]);
       }
     } catch (error) {
-      console.error("❌ Error fetching blogs:", error);
       toast.error("An unexpected error occurred while fetching blogs");
       setBlogs([]);
     } finally {
@@ -258,7 +254,7 @@ const BlogsPage = () => {
         )}
 
         {/* Load More Button (Placeholder for future pagination) */}
-        {filteredBlogs.length > 0 && filteredBlogs.length >= 12 && (
+        {/* {filteredBlogs.length > 0 && filteredBlogs.length >= 12 && (
           <div className="text-center mt-8 md:mt-12">
             <Button
               className="px-6 md:px-8 py-3 text-sm md:text-base"
@@ -267,7 +263,7 @@ const BlogsPage = () => {
               Load More Blogs
             </Button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

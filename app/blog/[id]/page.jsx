@@ -55,7 +55,6 @@ const SingleBlogPage = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log("🔄 Fetching blog data for ID:", blogId);
 
       const result = await getBlogById(blogId);
 
@@ -68,13 +67,10 @@ const SingleBlogPage = () => {
         }
 
         setBlog(result.blog);
-        console.log("✅ Blog data loaded successfully");
       } else {
         setError(result.error || "Blog not found");
-        console.error("❌ Failed to fetch blog:", result.error);
       }
     } catch (error) {
-      console.error("❌ Error fetching blog:", error);
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);
@@ -88,7 +84,6 @@ const SingleBlogPage = () => {
         setIsSaved(result.isSaved);
       }
     } catch (error) {
-      console.error("❌ Error checking saved status:", error);
     }
   };
 
@@ -110,9 +105,8 @@ const SingleBlogPage = () => {
           text: blog.description,
           url: window.location.href,
         });
-        toast.success("Shared successfully!");
+        // toast.success("Shared successfully!");
       } catch (error) {
-        console.log("Share cancelled");
       }
     } else {
       // Fallback: copy to clipboard
@@ -143,10 +137,8 @@ const SingleBlogPage = () => {
         if (result.success) {
           setIsSaved(false);
           toast.success("Blog removed from saved");
-          console.log("✅ Blog unsaved successfully");
         } else {
           toast.error(result.error || "Failed to remove blog from saved");
-          console.error("❌ Failed to unsave blog:", result.error);
         }
       } else {
         // Save the blog
@@ -154,14 +146,11 @@ const SingleBlogPage = () => {
         if (result.success) {
           setIsSaved(true);
           toast.success("Blog saved successfully");
-          console.log("✅ Blog saved successfully");
         } else {
           toast.error(result.error || "Failed to save blog");
-          console.error("❌ Failed to save blog:", result.error);
         }
       }
     } catch (error) {
-      console.error("❌ Error saving/unsaving blog:", error);
       toast.error("An unexpected error occurred");
     } finally {
       setSaveLoading(false);

@@ -25,23 +25,17 @@ const HeroSection = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log("🔄 Fetching latest blogs for hero slider...");
 
       const result = await getLatestBlogs(5);
-      console.log("📊 Hero blogs result:", result);
 
       if (result.success) {
         setLatestBlogs(result.blogs || []);
-        console.log(
-          `✅ Loaded ${result.blogs?.length || 0} blogs for hero slider`
-        );
+       
       } else {
-        console.error("❌ Failed to fetch blogs:", result.error);
         setError(result.error);
         setLatestBlogs([]);
       }
     } catch (error) {
-      console.error("❌ Error fetching latest blogs:", error);
       setError(error.message);
       setLatestBlogs([]);
     } finally {
@@ -49,13 +43,7 @@ const HeroSection = () => {
     }
   };
 
-  // Debug: Log current state
-  console.log("🔍 Hero Section State:", {
-    loading,
-    blogsCount: latestBlogs.length,
-    error,
-    firstBlog: latestBlogs[0],
-  });
+
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-between px-4 md:px-8 lg:px-16 py-8 pb-16 gap-8 md:gap-0 mt-20 lg:mt-0">
@@ -120,7 +108,7 @@ const HeroSection = () => {
                   description={blog.description}
                   date={blog.createdAt}
                   category={blog.category}
-                  id={blog.id}
+                  id={blog._id}
                 />
               </SwiperSlide>
             ))}

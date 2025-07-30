@@ -18,7 +18,6 @@ const CategorySection = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Fetching blog categories for homepage...");
 
       const result = await getBlogCategories();
 
@@ -26,15 +25,11 @@ const CategorySection = () => {
         // Show only first 10 categories for homepage
         const limitedCategories = result.categories.slice(0, 10);
         setCategories(limitedCategories);
-        console.log(
-          `✅ Loaded ${limitedCategories.length} categories for homepage`
-        );
+      
       } else {
-        console.error("❌ Failed to fetch categories:", result.error);
         setCategories([]);
       }
     } catch (error) {
-      console.error("❌ Error fetching categories:", error);
       setCategories([]);
     } finally {
       setLoading(false);

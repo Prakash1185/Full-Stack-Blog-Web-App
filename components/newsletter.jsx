@@ -20,20 +20,16 @@ const Newsletter = () => {
 
     try {
       setLoading(true);
-      console.log("📧 Subscribing to newsletter:", email);
 
       const result = await subscribeToNewsletter(email.trim());
 
       if (result.success) {
         toast.success(result.message);
         setEmail("");
-        console.log("✅ Newsletter subscription successful");
       } else {
         toast.error(result.error);
-        console.error("❌ Newsletter subscription failed:", result.error);
       }
     } catch (error) {
-      console.error("❌ Newsletter subscription error:", error);
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);

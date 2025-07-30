@@ -7,6 +7,7 @@ import Footer from "@/components/footer";
 import { usePathname } from "next/navigation";
 import { Toaster } from "sonner";
 import AuthSessionProvider from "@/components/providers/session-provider";
+import { Analytics } from "@vercel/analytics/next";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className={`${dmSans.className}`}>
         <Toaster />
+        <Analytics />
         <AuthSessionProvider>
           <ThemeProvider
             attribute="class"

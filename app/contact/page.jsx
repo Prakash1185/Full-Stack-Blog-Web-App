@@ -41,7 +41,6 @@ const Contact = () => {
 
     try {
       setLoading(true);
-      console.log("📧 Submitting contact form:", formData.email);
 
       const result = await submitContactForm(formData);
 
@@ -52,13 +51,10 @@ const Contact = () => {
           email: "",
           message: "",
         });
-        console.log("✅ Contact form submission successful");
       } else {
         toast.error(result.error);
-        console.error("❌ Contact form submission failed:", result.error);
       }
     } catch (error) {
-      console.error("❌ Contact form submission error:", error);
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);

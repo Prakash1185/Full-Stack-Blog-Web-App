@@ -8,7 +8,6 @@ import Link from "next/link";
 const Error = ({ error, reset }) => {
   const handleReportError = () => {
     // You can implement error reporting logic here
-    console.error("Error reported:", error);
     alert("Error reported successfully! We'll look into it.");
   };
 

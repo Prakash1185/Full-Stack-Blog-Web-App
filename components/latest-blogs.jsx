@@ -18,19 +18,15 @@ const LatestBlogs = () => {
   const fetchLatestBlogs = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Fetching latest blogs...");
 
       const result = await getLatestBlogs(6); // Get 6 latest blogs
 
       if (result.success) {
         setBlogs(result.blogs);
-        console.log(`✅ Loaded ${result.blogs.length} latest blogs`);
       } else {
-        console.error("❌ Failed to fetch latest blogs:", result.error);
         setBlogs([]);
       }
     } catch (error) {
-      console.error("❌ Error fetching latest blogs:", error);
       setBlogs([]);
     } finally {
       setLoading(false);

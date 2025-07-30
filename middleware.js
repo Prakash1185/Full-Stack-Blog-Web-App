@@ -6,12 +6,6 @@ export default withAuth(
     const token = req.nextauth.token;
     const { pathname } = req.nextUrl;
 
-    console.log("🔍 Middleware Debug:", {
-      pathname,
-      hasToken: !!token,
-      userRole: token?.role,
-      userEmail: token?.email,
-    });
 
     // If user is authenticated and tries to access login page, redirect them
     if (token && pathname === "/login") {

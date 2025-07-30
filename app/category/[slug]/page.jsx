@@ -36,7 +36,6 @@ const SingleCategoryBlogs = () => {
   const fetchCategoryData = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Fetching category data for:", slug);
 
       // Fetch blogs for this category and all categories
       const [blogsResult, categoriesResult] = await Promise.all([
@@ -46,30 +45,24 @@ const SingleCategoryBlogs = () => {
 
       if (blogsResult.success) {
         setBlogs(blogsResult.blogs);
-        console.log(`✅ Loaded ${blogsResult.blogs.length} blogs for ${slug}`);
       } else {
-        console.error("❌ Failed to fetch blogs:", blogsResult.error);
-        toast.error(blogsResult.error || "Failed to fetch blogs");
+        // toast.error(blogsResult.error || "Failed to fetch blogs");
         setBlogs([]);
       }
 
       if (categoriesResult.success) {
         setCategories(categoriesResult.categories);
-        console.log(
-          `✅ Loaded ${categoriesResult.categories.length} categories`
-        );
+       
       } else {
-        console.error("❌ Failed to fetch categories:", categoriesResult.error);
         setCategories([]);
       }
 
       if (blogsResult.success) {
         toast.success(
-          `Loaded ${blogsResult.blogs.length} ${categoryName} blogs!`
+          // `Loaded ${blogsResult.blogs.length} ${categoryName} blogs!`
         );
       }
     } catch (error) {
-      console.error("❌ Error fetching category data:", error);
       toast.error("An unexpected error occurred while fetching data");
       setBlogs([]);
       setCategories([]);

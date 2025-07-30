@@ -23,7 +23,6 @@ const Login = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
-      console.log("✅ User already authenticated, redirecting...");
       // Redirect based on user role
       if (session.user.role === "admin") {
         router.replace("/admin/dashboard");
@@ -36,22 +35,18 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Starting Google OAuth login...");
 
       const result = await signIn("google", {
         redirect: false, // Don't auto-redirect
       });
 
       if (result?.error) {
-        console.error("❌ Google login error:", result.error);
         setLoading(false);
       } else if (result?.ok) {
-        console.log("✅ Google login successful, waiting for session...");
         // Don't show success message here - let useEffect handle the redirect
         // The loading state will continue until useEffect redirects
       }
     } catch (error) {
-      console.error("❌ Google login error:", error);
       setLoading(false);
     }
   };

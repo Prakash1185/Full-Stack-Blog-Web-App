@@ -21,21 +21,17 @@ const CategoryPage = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Fetching blog categories...");
 
       const result = await getBlogCategories();
 
       if (result.success) {
         setCategories(result.categories);
-        console.log(`✅ Loaded ${result.categories.length} categories`);
-        toast.success(`Loaded ${result.categories.length} categories!`);
+        // toast.success(`Loaded ${result.categories.length} categories!`);
       } else {
-        console.error("❌ Failed to fetch categories:", result.error);
-        toast.error(result.error || "Failed to fetch categories");
+        // toast.error(result.error || "Failed to fetch categories");
         setCategories([]);
       }
     } catch (error) {
-      console.error("❌ Error fetching categories:", error);
       toast.error("An unexpected error occurred while fetching categories");
       setCategories([]);
     } finally {

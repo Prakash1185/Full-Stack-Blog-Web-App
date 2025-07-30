@@ -67,7 +67,6 @@ const Profile = () => {
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
-      console.log("🔄 Fetching user profile...");
 
       const result = await getUserProfile();
 
@@ -75,13 +74,10 @@ const Profile = () => {
         setUserName(result.user.name || "");
         setTempName(result.user.name || "");
         setSavedBlogs(result.user.savedBlogs || []);
-        console.log("✅ User profile loaded successfully");
       } else {
-        console.error("❌ Failed to fetch user profile:", result.error);
         toast.error("Failed to load profile data");
       }
     } catch (error) {
-      console.error("❌ Error fetching user profile:", error);
       toast.error("An unexpected error occurred");
     } finally {
       setLoading(false);
@@ -96,7 +92,6 @@ const Profile = () => {
 
     try {
       setUpdating(true);
-      console.log("🔄 Updating user name...");
 
       const result = await updateUserProfile({ name: tempName.trim() });
 
@@ -104,13 +99,10 @@ const Profile = () => {
         setUserName(tempName);
         setIsEditingName(false);
         toast.success("Name updated successfully");
-        console.log("✅ User name updated successfully");
       } else {
         toast.error(result.error || "Failed to update name");
-        console.error("❌ Failed to update name:", result.error);
       }
     } catch (error) {
-      console.error("❌ Error updating name:", error);
       toast.error("An unexpected error occurred");
     } finally {
       setUpdating(false);
@@ -124,14 +116,11 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      console.log("🔄 Logging out...");
       await signOut({
         callbackUrl: "/",
         redirect: true,
       });
-      console.log("✅ Logout successful");
     } catch (error) {
-      console.error("❌ Logout error:", error);
       toast.error("Failed to logout");
     }
   };
@@ -139,13 +128,11 @@ const Profile = () => {
   const handleDeleteAccount = async () => {
     try {
       setDeleting(true);
-      console.log("🔄 Deleting user account...");
 
       const result = await deleteUserAccount();
 
       if (result.success) {
         toast.success("Account deleted successfully");
-        console.log("✅ Account deleted successfully");
 
         // Sign out and redirect
         await signOut({
@@ -154,10 +141,8 @@ const Profile = () => {
         });
       } else {
         toast.error(result.error || "Failed to delete account");
-        console.error("❌ Failed to delete account:", result.error);
       }
     } catch (error) {
-      console.error("❌ Error deleting account:", error);
       toast.error("An unexpected error occurred");
     } finally {
       setDeleting(false);
@@ -167,20 +152,16 @@ const Profile = () => {
 
   const handleRemoveSavedBlog = async (blogId) => {
     try {
-      console.log("🔄 Removing saved blog:", blogId);
 
       const result = await removeSavedBlog(blogId);
 
       if (result.success) {
         setSavedBlogs(savedBlogs.filter((blog) => blog.id !== blogId));
         toast.success("Blog removed from saved");
-        console.log("✅ Blog removed from saved successfully");
       } else {
         toast.error(result.error || "Failed to remove blog");
-        console.error("❌ Failed to remove saved blog:", result.error);
       }
     } catch (error) {
-      console.error("❌ Error removing saved blog:", error);
       toast.error("An unexpected error occurred");
     }
   };
