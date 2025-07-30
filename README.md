@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🚀 Wryto - Full Stack Blog Web App
 
-## Getting Started
+A modern, feature-rich blog platform built with Next.js 14, featuring user authentication, admin panel, and markdown-based content management.
 
-First, run the development server:
+![Wryto Banner](https://res.cloudinary.com/diboqh2zz/image/upload/v1753918618/wryto_hdjjmy.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🔐 Authentication & Authorization
+- **Google OAuth Integration** with NextAuth.js
+- **Role-based Access Control** (User/Admin)
+- **Protected Routes** with middleware
+- **Session Management** for persistent login
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 📝 Content Management
+- **Markdown Editor** with syntax highlighting
+- **Rich Text Support** with ReactMarkdown
+- **Image Upload** and optimization with cloudinary
+- **Blog Categories & Tags** for organization
+- **Approval Workflow** for content moderation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+![Wryto Admin Dashboard](https://res.cloudinary.com/diboqh2zz/image/upload/v1753918953/wryto-ap_bnhvmr.png)
+### 👑 Admin Dashboard
+- **Complete Blog Management** system
+- **Real-time Analytics** and statistics
+- **User Management** capabilities
+- **Newsletter & Contact** query management
+- **Admin Profile** with editable information
 
-## Learn More
+### 👤 User Experience
+- **Responsive Design** with mobile-first approach
+- **Dark/Light Theme** toggle
+- **Blog Bookmarking** and saving functionality
+- **User Profiles** with saved blogs
+- **Search & Filter** capabilities
 
-To learn more about Next.js, take a look at the following resources:
+### 🎨 Modern UI/UX
+- **Neobrutalism Theme** 
+- **Smooth Animations** and transitions
+- **Accessible Interface** with proper ARIA labels
+- **Loading States** and error handling
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Frontend
+- **Next.js** 
+- **React 18** 
+- **TailwindCSS and Neobrutalism.dev** 
+- **Shadcn/ui** 
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Backend
+- **Next.js API Routes & Server actions**
+- **MongoDB** with Mongoose ODM
+- **NextAuth.js** for authentication
+- **File Upload** handling with cloudinary
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Development & Deployment
+- **Vercel** for hosting
+- **Vercel Analytics** for insights
+- **ESLint** for code quality
+- **Git** for version control
+
+## 🚀 Live Demo
+
+🌐 **[View Live Site](https://wryto.vercel.app)**
+
+## 📞 Contact & Support
+
+- **GitHub**: [@Prakash1185](https://github.com/Prakash1185)
+- **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/prakash-kumar-b26183330/)
+
+---
+
+⭐ **Star this repository if you found it helpful!**
+
+**Built with ❤️ by [Prakash]**
