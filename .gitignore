@@ -45,3 +45,5 @@ app/admin
 app/admin/*
 components/admin
 components/admin/*
+
+.vercel

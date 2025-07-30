@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send, Loader2 } from "lucide-react";
 import { socialLinks } from "@/data/socials";
 import Link from "next/link";
+import { submitContactForm } from "@/lib/actions/contact.actions";
+import { toast } from "sonner";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +16,7 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,17 +26,43 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission logic here
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      message: "",
-    });
+    // Basic validation
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.message.trim()
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      console.log("📧 Submitting contact form:", formData.email);
+
+      const result = await submitContactForm(formData);
+
+      if (result.success) {
+        toast.success(result.message);
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+        console.log("✅ Contact form submission successful");
+      } else {
+        toast.error(result.error);
+        console.error("❌ Contact form submission failed:", result.error);
+      }
+    } catch (error) {
+      console.error("❌ Contact form submission error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,8 +74,8 @@ const Contact = () => {
             Get in Touch
           </h1>
           <p className="text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            Have a question or want to collaborate? 
-            Send us a message and we'll respond as soon as possible.
+            Have a question or want to collaborate? Send us a message and we'll
+            respond as soon as possible.
           </p>
         </div>
 
@@ -133,6 +162,7 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
+                      disabled={loading}
                       className="w-full"
                     />
                   </div>
@@ -150,6 +180,7 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      disabled={loading}
                       className="w-full"
                     />
                   </div>
@@ -166,6 +197,7 @@ const Contact = () => {
                       value={formData.message}
                       onChange={handleInputChange}
                       required
+                      disabled={loading}
                       rows={6}
                       className="w-full max-h-28 min-h-20"
                     />
@@ -174,10 +206,20 @@ const Contact = () => {
                   {/* Submit Button */}
                   <Button
                     type="submit"
+                    disabled={loading}
                     className="w-full flex items-center justify-center gap-2 py-6 text-base font-medium cursor-pointer"
                   >
-                    <Send className="w-4 h-4" />
-                    Send Message
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Sending Message...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Send Message
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>

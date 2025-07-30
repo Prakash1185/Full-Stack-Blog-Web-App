@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarIcon } from "lucide-react";
 import Link from "next/link";
 
-const BlogCard = ({ image, title, description, date, category }) => {
+const BlogCard = ({ id, image, title, description, date, category, tags }) => {
   // Truncate description to show "..." at the end
   const truncatedDescription =
     description?.length > 180
@@ -64,7 +64,7 @@ const BlogCard = ({ image, title, description, date, category }) => {
       </CardContent>
 
       <CardFooter className="p-3 md:p-4 pt-0 w-full mt-auto">
-        <Link href={`/blog/${slugTitle}`} className="w-full">
+        <Link href={`/blog/${id}`} className="w-full">
           <Button className="w-full bg-background dark:bg-foreground cursor-pointer text-sm md:text-base py-2 md:py-3">
             Read More
           </Button>
