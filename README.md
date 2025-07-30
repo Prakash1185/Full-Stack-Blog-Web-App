@@ -1,6 +1,6 @@
 # 🚀 Wryto - Full Stack Blog Web App
 
-A modern, feature-rich blog platform built with Next.js 14, featuring user authentication, admin panel, and markdown-based content management.
+A modern, feature-rich blog platform built with Next.js, featuring user authentication, admin panel, and markdown-based content management.
 
 ![Wryto Banner](https://res.cloudinary.com/diboqh2zz/image/upload/v1753918618/wryto_hdjjmy.png)
 
