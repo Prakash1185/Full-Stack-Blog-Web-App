@@ -74,4 +74,4 @@ A modern, feature-rich blog platform built with Next.js 14, featuring user authe
 
 ⭐ **Star this repository if you found it helpful!**
 
-**Built with ❤️ by [Prakash]**
+**Built with ❤️ by Prakash**
