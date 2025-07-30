@@ -6,6 +6,12 @@ export default withAuth(
     const token = req.nextauth.token;
     const { pathname } = req.nextUrl;
 
+    console.log("🔍 Middleware Debug:", {
+      pathname,
+      hasToken: !!token,
+      userRole: token?.role,
+      userEmail: token?.email
+    });
 
     // If user is authenticated and tries to access login page, redirect them
     if (token && pathname === "/login") {
@@ -19,6 +25,7 @@ export default withAuth(
     // Handle profile routes based on user role
     if (pathname.startsWith("/profile")) {
       if (!token) {
+        console.log("❌ No token for profile access, redirecting to login");
         return NextResponse.redirect(new URL("/login", req.url));
       }
       // If admin tries to access user profile, redirect to admin profile
@@ -30,9 +37,11 @@ export default withAuth(
     // Handle admin profile route
     if (pathname === "/admin/profile") {
       if (!token) {
+        console.log("❌ No token for admin profile access, redirecting to login");
         return NextResponse.redirect(new URL("/login", req.url));
       }
       if (token.role !== "admin") {
+        console.log("❌ Non-admin trying to access admin profile, redirecting to user profile");
         return NextResponse.redirect(new URL("/profile", req.url));
       }
     }
@@ -40,13 +49,16 @@ export default withAuth(
     // Protect other admin routes - require admin role
     if (pathname.startsWith("/admin") && pathname !== "/admin/profile") {
       if (!token) {
+        console.log("❌ No token for admin access, redirecting to login");
         return NextResponse.redirect(new URL("/login", req.url));
       }
       if (token.role !== "admin") {
+        console.log("❌ Non-admin trying to access admin routes, redirecting to home");
         return NextResponse.redirect(new URL("/", req.url));
       }
     }
 
+    console.log("✅ Middleware allowing access to:", pathname);
     return NextResponse.next();
   },
   {
@@ -54,7 +66,13 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl;
 
-        // Allow access to login page
+        console.log("🔍 Authorized callback:", {
+          pathname,
+          hasToken: !!token,
+          userRole: token?.role
+        });
+
+        // Allow access to login page for everyone
         if (pathname === "/login") {
           return true;
         }
@@ -72,5 +90,9 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/login", "/profile/:path*", "/admin/:path*"],
+  matcher: [
+    "/login",
+    "/profile/:path*",
+    "/admin/:path*"
+  ],
 };
