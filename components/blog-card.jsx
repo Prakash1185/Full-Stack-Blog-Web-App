@@ -42,7 +42,7 @@ const BlogCard = ({ id, image, title, description, date, category, tags }) => {
           />
           <Badge
             variant=""
-            className="absolute text-xs md:text-sm top-2 left-2"
+            className="absolute text-xs md:text-sm top-2 left-2 capitalize"
           >
             {category}
           </Badge>

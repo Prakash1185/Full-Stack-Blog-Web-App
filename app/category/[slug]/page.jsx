@@ -23,8 +23,28 @@ const SingleCategoryBlogs = () => {
   const params = useParams();
   const slug = params.slug;
 
-  // Convert slug back to category name (capitalize first letter)
-  const categoryName = slug?.charAt(0).toUpperCase() + slug?.slice(1);
+  // Function to create clean URL slug
+  const createSlug = (category) => {
+    return category
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+      .trim();
+  };
+
+  // Function to find category by slug
+  const findCategoryBySlug = (categories, slug) => {
+    return categories.find((cat) => createSlug(cat.category) === slug);
+  };
+
+  // Get the actual category name from the slug
+  const categoryData = categories.find(
+    (cat) => createSlug(cat.category) === slug
+  );
+  const categoryName = categoryData
+    ? categoryData.category
+    : slug?.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   // Fetch category blogs and other categories on component mount
   useEffect(() => {
@@ -37,30 +57,30 @@ const SingleCategoryBlogs = () => {
     try {
       setLoading(true);
 
-      // Fetch blogs for this category and all categories
-      const [blogsResult, categoriesResult] = await Promise.all([
-        getBlogsByCategory(slug),
-        getBlogCategories(),
-      ]);
-
-      if (blogsResult.success) {
-        setBlogs(blogsResult.blogs);
-      } else {
-        // toast.error(blogsResult.error || "Failed to fetch blogs");
-        setBlogs([]);
-      }
-
+      // First get categories to find the actual category name
+      const categoriesResult = await getBlogCategories();
       if (categoriesResult.success) {
         setCategories(categoriesResult.categories);
-       
+
+        // Find the actual category name from the slug
+        const actualCategory = categoriesResult.categories.find(
+          (cat) => createSlug(cat.category) === slug
+        );
+
+        if (actualCategory) {
+          // Now fetch blogs using the actual category name
+          const blogsResult = await getBlogsByCategory(actualCategory.category);
+          if (blogsResult.success) {
+            setBlogs(blogsResult.blogs);
+          } else {
+            setBlogs([]);
+          }
+        } else {
+          setBlogs([]);
+        }
       } else {
         setCategories([]);
-      }
-
-      if (blogsResult.success) {
-        // toast.success(
-        //   // `Loaded ${blogsResult.blogs.length} ${categoryName} blogs!`
-        // );
+        setBlogs([]);
       }
     } catch (error) {
       toast.error("An unexpected error occurred while fetching data");
@@ -77,11 +97,6 @@ const SingleCategoryBlogs = () => {
     await fetchCategoryData();
     setRefreshing(false);
   };
-
-  // Get current category data for blog count
-  const categoryData = categories.find(
-    (cat) => cat.category.toLowerCase() === slug?.toLowerCase()
-  );
 
   // Filter blogs by search term
   const filteredBlogs = useMemo(() => {
@@ -100,7 +115,7 @@ const SingleCategoryBlogs = () => {
   // Get other categories for suggestions (exclude current category)
   const otherCategories = useMemo(() => {
     return categories
-      .filter((cat) => cat.category.toLowerCase() !== slug?.toLowerCase())
+      .filter((cat) => createSlug(cat.category) !== slug)
       .slice(0, 4);
   }, [categories, slug]);
 
@@ -163,13 +178,13 @@ const SingleCategoryBlogs = () => {
         {/* Page Header */}
         <div className="text-center mb-6 md:mb-8 lg:mb-12">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold capitalize">
               {categoryName}
             </h1>
-           
-            <Badge variant="secondary" className="text-xs md:text-sm">
+
+            {/* <Badge variant="secondary" className="text-xs md:text-sm">
               {categoryData?.blogCount || filteredBlogs.length} articles
-            </Badge>
+            </Badge> */}
           </div>
           <p className="text-sm md:text-base max-w-2xl mx-auto px-4 md:px-0 leading-relaxed">
             Explore our collection of {categoryName?.toLowerCase()} blogs and
@@ -218,7 +233,7 @@ const SingleCategoryBlogs = () => {
         {/* Results Info */}
         <div className="flex justify-center mb-4">
           <p className="text-xs md:text-sm opacity-70">
-            Showing {filteredBlogs.length} of {blogs.length} approved{" "}
+            Showing {filteredBlogs.length} of {blogs.length}{" "}
             {categoryName?.toLowerCase()} blogs
             {searchTerm && ` matching "${searchTerm}"`}
           </p>
@@ -288,7 +303,7 @@ const SingleCategoryBlogs = () => {
               {otherCategories.map((category, index) => (
                 <Link
                   key={index}
-                  href={`/category/${category.category.toLowerCase()}`}
+                  href={`/category/${createSlug(category.category)}`}
                   className="group"
                 >
                   <Card className="bg-main cursor-pointer hover:shadow-lg transition-all duration-300 ease-linear">

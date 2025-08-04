@@ -46,6 +46,16 @@ const CategoryPage = () => {
     setRefreshing(false);
   };
 
+  // Function to create clean URL slug
+  const createSlug = (category) => {
+    return category
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+      .trim();
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -79,17 +89,7 @@ const CategoryPage = () => {
             <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold px-2">
               Blog Categories
             </h1>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="hidden sm:flex"
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-              />
-            </Button>
+            
           </div>
           <p className="text-sm md:text-base max-w-xs sm:max-w-md md:max-w-2xl mx-auto px-4 md:px-0 leading-relaxed">
             Browse our blog posts by category. Click on any category to explore
@@ -103,7 +103,7 @@ const CategoryPage = () => {
             {categories.map((categoryItem, index) => (
               <Link
                 key={index}
-                href={`/category/${categoryItem.category.toLowerCase()}`}
+                href={`/category/${createSlug(categoryItem.category)}`}
                 className="group"
               >
                 <CategoryCard
